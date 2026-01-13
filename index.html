@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Regarder autrement</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: black;
+  }
+  .overlay {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 16px;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+<div class="overlay">Regardez autrement</div>
+<script>
+let cam;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  cam = createCapture(VIDEO, () => console.log("cam ready"));
+  cam.size(width, height);
+  cam.hide(); // on cache la vidéo brute
+}
+
+function draw() {
+  background(0);
+  translate(width, 0); // pour retourner l'image horizontalement si besoin
+  scale(-1, 1);
+  cam.loadPixels();
+  loadPixels();
+  for (let y = 0; y < cam.height; y++) {
+    for (let x = 0; x < cam.width; x++) {
+      let index = (x + y * cam.width) * 4;
+      let r = 255 - cam.pixels[index + 0];
+      let g = 255 - cam.pixels[index + 1];
+      let b = 255 - cam.pixels[index + 2];
+      let px = (x + y * width / cam.width) + (y * width);
+      // dessine pixel
+      stroke(r, g, b);
+      point(x * width / cam.width, y * height / cam.height);
+    }
+  }
+}
+</script>
+</body>
+</html>
